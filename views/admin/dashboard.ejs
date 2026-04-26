@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — Admin Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body class="admin-body">
+  <div class="noise"></div>
+
+  <!-- Admin Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <span class="logo-bracket">[</span>admin<span class="logo-bracket">]</span>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="/admin" class="sidebar-link active">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Dashboard
+      </a>
+      <a href="/admin/nuevo" class="sidebar-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Nuevo proyecto
+      </a>
+      <a href="/" target="_blank" class="sidebar-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        Ver portfolio
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="sidebar-avatar"><%= user.username.charAt(0).toUpperCase() %></div>
+        <span><%= user.username %></span>
+      </div>
+      <a href="/admin/logout" class="sidebar-logout">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Salir
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main content -->
+  <main class="admin-main">
+    <div class="admin-topbar">
+      <div>
+        <h1 class="admin-page-title">Dashboard</h1>
+        <p class="admin-page-sub">Gestiona tus proyectos del portfolio</p>
+      </div>
+      <a href="/admin/nuevo" class="btn-primary">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Nuevo proyecto
+      </a>
+    </div>
+
+    <!-- Stats -->
+    <div class="admin-stats">
+      <div class="admin-stat-card">
+        <div class="asc-icon">📁</div>
+        <div class="asc-num"><%= projects.length %></div>
+        <div class="asc-label">Total proyectos</div>
+      </div>
+      <div class="admin-stat-card">
+        <div class="asc-icon">⭐</div>
+        <div class="asc-num"><%= projects.filter(p => p.featured).length %></div>
+        <div class="asc-label">Destacados</div>
+      </div>
+      <div class="admin-stat-card">
+        <div class="asc-icon">✅</div>
+        <div class="asc-num"><%= projects.filter(p => p.status === 'published').length %></div>
+        <div class="asc-label">Publicados</div>
+      </div>
+      <div class="admin-stat-card">
+        <div class="asc-icon">📝</div>
+        <div class="asc-num"><%= projects.filter(p => p.status === 'draft').length %></div>
+        <div class="asc-label">Borradores</div>
+      </div>
+    </div>
+
+    <!-- Projects table -->
+    <div class="admin-section">
+      <div class="admin-section-header">
+        <h2 class="admin-section-title">Proyectos</h2>
+        <input type="text" id="searchProjects" class="admin-search" placeholder="Buscar proyecto...">
+      </div>
+
+      <% if (projects.length === 0) { %>
+        <div class="admin-empty">
+          <div class="admin-empty-icon">📁</div>
+          <p>No hay proyectos aún.</p>
+          <a href="/admin/nuevo" class="btn-primary">Crear primer proyecto</a>
+        </div>
+      <% } else { %>
+      <div class="projects-table-wrapper">
+        <table class="projects-table" id="projectsTable">
+          <thead>
+            <tr>
+              <th>Imagen</th>
+              <th>Título</th>
+              <th>Tags</th>
+              <th>Estado</th>
+              <th>Destacado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% projects.forEach(p => { %>
+            <tr class="project-row">
+              <td>
+                <% if (p.image) { %>
+                  <img src="<%= p.image %>" alt="<%= p.title %>" class="table-thumb">
+                <% } else { %>
+                  <div class="table-placeholder"><%= p.title.charAt(0) %></div>
+                <% } %>
+              </td>
+              <td>
+                <div class="table-title"><%= p.title %></div>
+                <div class="table-desc"><%= p.description.slice(0,60) %>...</div>
+              </td>
+              <td>
+                <div class="table-tags">
+                  <% if (p.tags) { p.tags.split(',').slice(0,3).forEach(tag => { %>
+                    <span class="tag-sm"><%= tag.trim() %></span>
+                  <% })} %>
+                </div>
+              </td>
+              <td>
+                <span class="status-badge status-<%= p.status %>">
+                  <%= p.status === 'published' ? '● Publicado' : '○ Borrador' %>
+                </span>
+              </td>
+              <td>
+                <span class="featured-indicator <%= p.featured ? 'is-featured' : '' %>">
+                  <%= p.featured ? '★' : '☆' %>
+                </span>
+              </td>
+              <td>
+                <div class="table-actions">
+                  <a href="/proyecto/<%= p.id %>" target="_blank" class="action-btn action-view" title="Ver">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  </a>
+                  <a href="/admin/editar/<%= p.id %>" class="action-btn action-edit" title="Editar">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                  </a>
+                  <form action="/admin/eliminar/<%= p.id %>" method="POST" style="display:inline" onsubmit="return confirm('¿Eliminar este proyecto?')">
+                    <button type="submit" class="action-btn action-delete" title="Eliminar">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+                    </button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+      <% } %>
+    </div>
+  </main>
+
+  <script src="/js/admin.js"></script>
+</body>
+</html>

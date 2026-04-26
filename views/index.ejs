@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portfolio — Desarrollador Web</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+
+  <!-- Cursor -->
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-dot" id="cursorDot"></div>
+
+  <!-- Noise overlay -->
+  <div class="noise"></div>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-inner">
+      <a href="/" class="logo">
+        <span class="logo-bracket">[</span>
+        dev
+        <span class="logo-bracket">]</span>
+      </a>
+      <nav class="nav">
+        <a href="#proyectos" class="nav-link">Proyectos</a>
+        <a href="#sobre-mi" class="nav-link">Sobre mí</a>
+        <a href="#contacto" class="nav-link">Contacto</a>
+      </nav>
+      <a href="/admin" class="admin-btn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+        Admin
+      </a>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-bg-text">PORTFOLIO</div>
+    <div class="hero-content">
+      <div class="hero-tag">
+        <span class="dot pulse"></span>
+        Disponible para proyectos
+      </div>
+      <h1 class="hero-title">
+        <span class="line line-1">Diseño &</span>
+        <span class="line line-2">Desarrollo</span>
+        <span class="line line-3 accent">Web.</span>
+      </h1>
+      <p class="hero-sub">
+        Creo experiencias digitales que combinan estética y funcionalidad.<br>
+        Cada proyecto, una historia bien contada.
+      </p>
+      <div class="hero-cta">
+        <a href="#proyectos" class="btn-primary">
+          Ver proyectos
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <a href="#contacto" class="btn-ghost">Hablemos</a>
+      </div>
+    </div>
+    <div class="hero-scroll">
+      <span>scroll</span>
+      <div class="scroll-line"></div>
+    </div>
+    <div class="hero-stats">
+      <div class="stat">
+        <span class="stat-num">+<%= projects.length %></span>
+        <span class="stat-label">Proyectos</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat">
+        <span class="stat-num">3+</span>
+        <span class="stat-label">Años exp.</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat">
+        <span class="stat-num">100%</span>
+        <span class="stat-label">Dedicación</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured -->
+  <% if (featured.length > 0) { %>
+  <section class="section featured-section" id="proyectos">
+    <div class="section-header">
+      <div class="section-label">// destacados</div>
+      <h2 class="section-title">Proyectos <em>Principales</em></h2>
+    </div>
+    <div class="featured-grid">
+      <% featured.forEach((p, i) => { %>
+      <article class="featured-card <%= i === 0 ? 'featured-large' : '' %>" onclick="location.href='/proyecto/<%= p.id %>'">
+        <div class="card-image">
+          <% if (p.image) { %>
+            <img src="<%= p.image %>" alt="<%= p.title %>" loading="lazy">
+          <% } else { %>
+            <div class="card-placeholder">
+              <span><%= p.title.charAt(0) %></span>
+            </div>
+          <% } %>
+          <div class="card-overlay"></div>
+        </div>
+        <div class="card-body">
+          <div class="card-tags">
+            <% if (p.tags) { p.tags.split(',').slice(0,3).forEach(tag => { %>
+              <span class="tag"><%= tag.trim() %></span>
+            <% })} %>
+          </div>
+          <h3 class="card-title"><%= p.title %></h3>
+          <p class="card-desc"><%= p.description %></p>
+          <div class="card-links">
+            <% if (p.liveUrl) { %>
+              <a href="<%= p.liveUrl %>" target="_blank" class="card-link" onclick="event.stopPropagation()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                Live
+              </a>
+            <% } %>
+            <% if (p.githubUrl) { %>
+              <a href="<%= p.githubUrl %>" target="_blank" class="card-link" onclick="event.stopPropagation()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                GitHub
+              </a>
+            <% } %>
+            <span class="card-arrow">Ver proyecto →</span>
+          </div>
+        </div>
+      </article>
+      <% }) %>
+    </div>
+  </section>
+  <% } %>
+
+  <!-- All projects -->
+  <section class="section all-projects-section" id="<%= featured.length === 0 ? 'proyectos' : 'todos' %>">
+    <div class="section-header">
+      <div class="section-label">// todos</div>
+      <h2 class="section-title">Todo el <em>Trabajo</em></h2>
+    </div>
+
+    <!-- Filter tags -->
+    <div class="filters" id="filters">
+      <button class="filter-btn active" data-filter="all">Todos</button>
+      <!-- Tags dynamically from JS -->
+    </div>
+
+    <% if (projects.length === 0) { %>
+      <div class="empty-state">
+        <div class="empty-icon">📁</div>
+        <p>Aún no hay proyectos publicados.</p>
+        <a href="/admin" class="btn-primary">Agregar proyectos →</a>
+      </div>
+    <% } else { %>
+    <div class="projects-grid" id="projectsGrid">
+      <% projects.forEach(p => { %>
+      <article class="project-card" data-tags="<%= p.tags || '' %>" onclick="location.href='/proyecto/<%= p.id %>'">
+        <div class="proj-image">
+          <% if (p.image) { %>
+            <img src="<%= p.image %>" alt="<%= p.title %>" loading="lazy">
+          <% } else { %>
+            <div class="proj-placeholder"><%= p.title.charAt(0).toUpperCase() %></div>
+          <% } %>
+          <% if (p.featured) { %><div class="featured-badge">★ Destacado</div><% } %>
+        </div>
+        <div class="proj-body">
+          <div class="proj-tags">
+            <% if (p.tags) { p.tags.split(',').slice(0,4).forEach(tag => { %>
+              <span class="tag-sm"><%= tag.trim() %></span>
+            <% })} %>
+          </div>
+          <h3 class="proj-title"><%= p.title %></h3>
+          <p class="proj-desc"><%= p.description.slice(0,100) %><%= p.description.length > 100 ? '...' : '' %></p>
+          <div class="proj-footer">
+            <span class="proj-cta">Ver más →</span>
+            <div class="proj-actions">
+              <% if (p.liveUrl) { %>
+                <a href="<%= p.liveUrl %>" target="_blank" title="Live" onclick="event.stopPropagation()" class="proj-icon-link">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                </a>
+              <% } %>
+              <% if (p.githubUrl) { %>
+                <a href="<%= p.githubUrl %>" target="_blank" title="GitHub" onclick="event.stopPropagation()" class="proj-icon-link">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                </a>
+              <% } %>
+            </div>
+          </div>
+        </div>
+      </article>
+      <% }) %>
+    </div>
+    <% } %>
+  </section>
+
+  <!-- About -->
+  <section class="section about-section" id="sobre-mi">
+    <div class="about-grid">
+      <div class="about-left">
+        <div class="section-label">// sobre mí</div>
+        <h2 class="section-title">El desarrollador<br>detrás del código</h2>
+        <p class="about-text">
+          Soy un desarrollador web apasionado por crear experiencias digitales que no solo funcionen perfectamente, sino que también sean visualmente impactantes.
+        </p>
+        <p class="about-text">
+          Trabajo con tecnologías modernas para construir productos que resuelven problemas reales y dejan huella en quien los usa.
+        </p>
+        <div class="skills-grid">
+          <div class="skill-group">
+            <div class="skill-label">Frontend</div>
+            <div class="skill-items">React · Vue · Next.js · Tailwind</div>
+          </div>
+          <div class="skill-group">
+            <div class="skill-label">Backend</div>
+            <div class="skill-items">Node.js · Express · Python · PostgreSQL</div>
+          </div>
+          <div class="skill-group">
+            <div class="skill-label">Deploy</div>
+            <div class="skill-items">Railway · Vercel · Docker · AWS</div>
+          </div>
+        </div>
+      </div>
+      <div class="about-right">
+        <div class="about-card">
+          <div class="about-card-inner">
+            <div class="about-avatar">
+              <div class="avatar-ring"></div>
+              <div class="avatar-initials">DEV</div>
+            </div>
+            <div class="about-card-info">
+              <div class="about-card-name">Desarrollador Full Stack</div>
+              <div class="about-card-loc">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                Colombia
+              </div>
+            </div>
+          </div>
+          <div class="about-card-tags">
+            <span>🚀 Apasionado</span>
+            <span>💡 Creativo</span>
+            <span>⚡ Rápido</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section class="section contact-section" id="contacto">
+    <div class="contact-inner">
+      <div class="section-label">// contacto</div>
+      <h2 class="contact-title">¿Tienes un proyecto<br>en mente?</h2>
+      <p class="contact-sub">Hablemos y hagámoslo realidad.</p>
+      <div class="contact-links">
+        <a href="mailto:hola@tudominio.com" class="contact-card">
+          <div class="contact-icon">✉</div>
+          <div>
+            <div class="contact-card-label">Email</div>
+            <div class="contact-card-val">hola@tudominio.com</div>
+          </div>
+          <span class="contact-arrow">→</span>
+        </a>
+        <a href="https://github.com/" target="_blank" class="contact-card">
+          <div class="contact-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+          </div>
+          <div>
+            <div class="contact-card-label">GitHub</div>
+            <div class="contact-card-val">@tuusuario</div>
+          </div>
+          <span class="contact-arrow">→</span>
+        </a>
+        <a href="https://linkedin.com/" target="_blank" class="contact-card">
+          <div class="contact-icon">in</div>
+          <div>
+            <div class="contact-card-label">LinkedIn</div>
+            <div class="contact-card-val">Tu nombre</div>
+          </div>
+          <span class="contact-arrow">→</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <span class="footer-logo">[dev]</span>
+      <span class="footer-copy">© <%= new Date().getFullYear() %> — Hecho con ☕ en Colombia</span>
+      <a href="/admin" class="footer-admin">Panel admin</a>
+    </div>
+  </footer>
+
+  <script src="/js/main.js"></script>
+</body>
+</html>

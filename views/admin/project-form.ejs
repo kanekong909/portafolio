@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= project ? 'Editar' : 'Nuevo' %> Proyecto — Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body class="admin-body">
+  <div class="noise"></div>
+
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <span class="logo-bracket">[</span>admin<span class="logo-bracket">]</span>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="/admin" class="sidebar-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Dashboard
+      </a>
+      <a href="/admin/nuevo" class="sidebar-link active">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Nuevo proyecto
+      </a>
+      <a href="/" target="_blank" class="sidebar-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        Ver portfolio
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="sidebar-avatar"><%= user.username.charAt(0).toUpperCase() %></div>
+        <span><%= user.username %></span>
+      </div>
+      <a href="/admin/logout" class="sidebar-logout">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Salir
+      </a>
+    </div>
+  </aside>
+
+  <main class="admin-main">
+    <div class="admin-topbar">
+      <div>
+        <h1 class="admin-page-title"><%= project ? 'Editar' : 'Nuevo' %> Proyecto</h1>
+        <p class="admin-page-sub"><%= project ? 'Modifica la información del proyecto' : 'Agrega un nuevo proyecto a tu portfolio' %></p>
+      </div>
+      <a href="/admin" class="btn-ghost">← Volver</a>
+    </div>
+
+    <% if (error) { %>
+      <div class="admin-error"><%= error %></div>
+    <% } %>
+
+    <form action="/admin/<%= project ? 'editar/' + project.id : 'nuevo' %>" method="POST" enctype="multipart/form-data" class="project-form">
+      <div class="form-grid">
+        <!-- Left col -->
+        <div class="form-col">
+          <div class="form-card">
+            <h3 class="form-card-title">Información del proyecto</h3>
+
+            <div class="form-group">
+              <label class="form-label">Título *</label>
+              <input type="text" name="title" class="form-input" value="<%= project ? project.title : '' %>" placeholder="Mi proyecto increíble" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Descripción corta *</label>
+              <textarea name="description" class="form-input form-textarea" placeholder="Una frase que describe el proyecto..." required rows="3"><%= project ? project.description : '' %></textarea>
+              <span class="form-hint">Aparece en las tarjetas del portfolio</span>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Descripción larga</label>
+              <textarea name="longDescription" class="form-input form-textarea" placeholder="Describe el proyecto en detalle, los retos, tecnologías usadas..." rows="6"><%= project ? (project.longDescription || '') : '' %></textarea>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Tags / Tecnologías</label>
+              <input type="text" name="tags" class="form-input" value="<%= project ? (project.tags || '') : '' %>" placeholder="React, Node.js, PostgreSQL">
+              <span class="form-hint">Separa con comas</span>
+            </div>
+          </div>
+
+          <div class="form-card">
+            <h3 class="form-card-title">Links</h3>
+            <div class="form-group">
+              <label class="form-label">URL del proyecto (live)</label>
+              <input type="url" name="liveUrl" class="form-input" value="<%= project ? (project.liveUrl || '') : '' %>" placeholder="https://miproyecto.com">
+            </div>
+            <div class="form-group">
+              <label class="form-label">URL de GitHub</label>
+              <input type="url" name="githubUrl" class="form-input" value="<%= project ? (project.githubUrl || '') : '' %>" placeholder="https://github.com/usuario/repo">
+            </div>
+          </div>
+        </div>
+
+        <!-- Right col -->
+        <div class="form-col">
+          <div class="form-card">
+            <h3 class="form-card-title">Imagen del proyecto</h3>
+            <div class="image-upload-area" id="uploadArea">
+              <% if (project && project.image) { %>
+                <img src="<%= project.image %>" alt="Preview" class="image-preview" id="imgPreview">
+              <% } else { %>
+                <img src="" alt="Preview" class="image-preview" id="imgPreview" style="display:none">
+              <% } %>
+              <div class="upload-placeholder" id="uploadPlaceholder" style="<%= project && project.image ? 'display:none' : '' %>">
+                <div class="upload-icon">📷</div>
+                <p>Haz click o arrastra una imagen</p>
+                <span>PNG, JPG, WebP — Máx. 10MB</span>
+              </div>
+              <input type="file" name="image" id="imageInput" accept="image/*" class="file-input-hidden">
+            </div>
+          </div>
+
+          <div class="form-card">
+            <h3 class="form-card-title">Configuración</h3>
+
+            <div class="form-group">
+              <label class="form-label">Estado</label>
+              <select name="status" class="form-input form-select">
+                <option value="published" <%= !project || project.status === 'published' ? 'selected' : '' %>>✅ Publicado</option>
+                <option value="draft" <%= project && project.status === 'draft' ? 'selected' : '' %>>📝 Borrador</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Orden (menor = primero)</label>
+              <input type="number" name="order" class="form-input" value="<%= project ? project.order : 0 %>" min="0" max="999">
+            </div>
+
+            <div class="form-group">
+              <label class="toggle-label">
+                <input type="checkbox" name="featured" class="toggle-input" <%= project && project.featured ? 'checked' : '' %>>
+                <div class="toggle-switch"></div>
+                <span>Proyecto destacado</span>
+              </label>
+              <span class="form-hint">Los destacados aparecen en la sección principal del portfolio</span>
+            </div>
+          </div>
+
+          <div class="form-actions-col">
+            <button type="submit" class="btn-primary btn-full">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+              <%= project ? 'Guardar cambios' : 'Publicar proyecto' %>
+            </button>
+            <a href="/admin" class="btn-ghost btn-full">Cancelar</a>
+          </div>
+        </div>
+      </div>
+    </form>
+  </main>
+
+  <script src="/js/admin.js"></script>
+</body>
+</html>
