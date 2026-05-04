@@ -39,18 +39,17 @@ app.use('/', require('./routes/public'));
 app.use('/admin', require('./routes/admin'));
 
 // Sync DB and start
+// Sync DB and start
 sequelize.sync({ alter: true }).then(async () => {
-  // Seed admin user if not exists
   const { User } = require('./models');
   const bcrypt = require('bcryptjs');
-  const adminUser = await User.findOne({ where: { username: 'admin' } });
-  if (!adminUser) {
-    await User.create({
-      username: process.env.ADMIN_USER || 'admin',
+  const [adminUser, created] = await User.findOrCreate({
+    where: { username: process.env.ADMIN_USER || 'admin' },
+    defaults: {
       password: await bcrypt.hash(process.env.ADMIN_PASS || 'admin123', 10)
-    });
-    console.log('✅ Admin creado: admin / admin123');
-  }
+    }
+  });
+  if (created) console.log('✅ Admin creado:', adminUser.username);
 
   app.listen(PORT, () => {
     console.log(`🚀 Portfolio corriendo en http://localhost:${PORT}`);
