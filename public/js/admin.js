@@ -4,49 +4,63 @@ if (searchInput) {
   searchInput.addEventListener('input', () => {
     const q = searchInput.value.toLowerCase();
     document.querySelectorAll('.project-row').forEach(row => {
-      const text = row.textContent.toLowerCase();
-      row.style.display = text.includes(q) ? '' : 'none';
+      row.style.display = row.textContent.toLowerCase().includes(q) ? '' : 'none';
     });
   });
 }
 
-// ─── Image upload preview ───
+// ─── Image upload preview (múltiples) ───
 const imageInput = document.getElementById('imageInput');
-const imgPreview = document.getElementById('imgPreview');
+const newImgPreviews = document.getElementById('newImgPreviews');
 const uploadPlaceholder = document.getElementById('uploadPlaceholder');
 const uploadArea = document.getElementById('uploadArea');
 
 if (imageInput) {
   imageInput.addEventListener('change', e => {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = ev => {
-      imgPreview.src = ev.target.result;
-      imgPreview.style.display = 'block';
-      if (uploadPlaceholder) uploadPlaceholder.style.display = 'none';
-    };
-    reader.readAsDataURL(file);
+    newImgPreviews.innerHTML = '';
+    Array.from(e.target.files).forEach(file => {
+      const reader = new FileReader();
+      reader.onload = ev => {
+        const img = document.createElement('img');
+        img.src = ev.target.result;
+        newImgPreviews.appendChild(img);
+      };
+      reader.readAsDataURL(file);
+    });
+    if (uploadPlaceholder) {
+      uploadPlaceholder.style.display = e.target.files.length > 0 ? 'none' : '';
+    }
   });
 }
 
+// ─── Drag & drop ───
 if (uploadArea) {
   uploadArea.addEventListener('dragover', e => {
     e.preventDefault();
     uploadArea.classList.add('drag-over');
   });
-  uploadArea.addEventListener('dragleave', () => {
-    uploadArea.classList.remove('drag-over');
-  });
+  uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('drag-over'));
   uploadArea.addEventListener('drop', e => {
     e.preventDefault();
     uploadArea.classList.remove('drag-over');
-    const file = e.dataTransfer.files[0];
-    if (file && imageInput) {
-      const dt = new DataTransfer();
-      dt.items.add(file);
-      imageInput.files = dt.files;
+    if (imageInput) {
+      imageInput.files = e.dataTransfer.files;
       imageInput.dispatchEvent(new Event('change'));
     }
   });
 }
+
+// ─── Eliminar imágenes existentes ───
+const removeButtons = document.querySelectorAll('.remove-img-btn');
+const removeImagesInput = document.getElementById('removeImages');
+const toRemove = [];
+
+removeButtons.forEach(btn => {
+  btn.addEventListener('click', () => {
+    const index = btn.dataset.index;
+    toRemove.push(index);
+    btn.closest('.existing-img-wrap').style.opacity = '0.3';
+    btn.closest('.existing-img-wrap').style.pointerEvents = 'none';
+    if (removeImagesInput) removeImagesInput.value = toRemove.join(',');
+  });
+});
