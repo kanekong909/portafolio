@@ -85,10 +85,10 @@ window.addEventListener('scroll', () => {
 });
 
 
-// ─── Carousel ───
+// ─── Carousel + Lightbox ───
 const track = document.getElementById('carouselTrack');
 if (track) {
-  const slides = track.querySelectorAll('.carousel-slide');
+  const slides = Array.from(track.querySelectorAll('.carousel-slide'));
   const dots = document.querySelectorAll('.carousel-dot');
   const prev = document.getElementById('carouselPrev');
   const next = document.getElementById('carouselNext');
@@ -104,7 +104,7 @@ if (track) {
   if (next) next.addEventListener('click', () => goTo(current + 1));
   dots.forEach((dot, i) => dot.addEventListener('click', () => goTo(i)));
 
-  // Swipe en móvil
+  // Swipe móvil
   let startX = 0;
   track.addEventListener('touchstart', e => startX = e.touches[0].clientX);
   track.addEventListener('touchend', e => {
@@ -113,5 +113,63 @@ if (track) {
   });
 
   // Auto-play
-  setInterval(() => goTo(current + 1), 5000);
+  let autoPlay = setInterval(() => goTo(current + 1), 5000);
+  track.addEventListener('mouseenter', () => clearInterval(autoPlay));
+  track.addEventListener('mouseleave', () => { autoPlay = setInterval(() => goTo(current + 1), 5000); });
+
+  // ─── Lightbox ───
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImg = document.getElementById('lightboxImg');
+  const lightboxCounter = document.getElementById('lightboxCounter');
+  const lightboxClose = document.getElementById('lightboxClose');
+  const lightboxPrev = document.getElementById('lightboxPrev');
+  const lightboxNext = document.getElementById('lightboxNext');
+
+  const images = slides.map(slide => slide.querySelector('img')?.src).filter(Boolean);
+  let lightboxIndex = 0;
+
+  function openLightbox(index) {
+    lightboxIndex = index;
+    lightboxImg.src = images[lightboxIndex];
+    lightboxCounter.textContent = `${lightboxIndex + 1} / ${images.length}`;
+    lightbox.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeLightbox() {
+    lightbox.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  function lightboxGoTo(index) {
+    lightboxIndex = (index + images.length) % images.length;
+    lightboxImg.src = images[lightboxIndex];
+    lightboxCounter.textContent = `${lightboxIndex + 1} / ${images.length}`;
+  }
+
+  // Click en slide abre lightbox en esa imagen
+  slides.forEach((slide, i) => {
+    slide.addEventListener('click', () => openLightbox(i));
+  });
+
+  if (lightboxClose) lightboxClose.addEventListener('click', closeLightbox);
+  if (lightboxPrev) lightboxPrev.addEventListener('click', () => lightboxGoTo(lightboxIndex - 1));
+  if (lightboxNext) lightboxNext.addEventListener('click', () => lightboxGoTo(lightboxIndex + 1));
+
+  // Cerrar con click fuera o ESC
+  lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLightbox(); });
+  document.addEventListener('keydown', e => {
+    if (!lightbox.classList.contains('active')) return;
+    if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'ArrowLeft') lightboxGoTo(lightboxIndex - 1);
+    if (e.key === 'ArrowRight') lightboxGoTo(lightboxIndex + 1);
+  });
+
+  // Swipe en lightbox
+  let lbStartX = 0;
+  lightbox.addEventListener('touchstart', e => lbStartX = e.touches[0].clientX);
+  lightbox.addEventListener('touchend', e => {
+    const diff = lbStartX - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 50) lightboxGoTo(lightboxIndex + (diff > 0 ? 1 : -1));
+  });
 }
