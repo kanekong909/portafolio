@@ -801,3 +801,39 @@ body:has(a:hover) .cursor, body:has(button:hover) .cursor { transform: translate
   .hero-title { font-size: 42px; }
   .hero-cta { flex-direction: column; }
 }
+
+@media (max-width: 768px) {
+  .contact-section {
+    margin: 0 0 60px;
+    border-radius: 0;
+  }
+
+  .contact-inner {
+    padding: 48px 20px;
+  }
+
+  .contact-title {
+    font-size: 32px;
+  }
+
+  .contact-card {
+    padding: 16px;
+    gap: 12px;
+  }
+
+  .contact-icon {
+    width: 36px;
+    height: 36px;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  .contact-card-val {
+    font-size: 13px;
+    word-break: break-all;
+  }
+
+  .contact-arrow {
+    display: none;
+  }
+}
