@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
+const multer = require('multer'); 
 const cloudinary = require('cloudinary').v2;
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
 const path = require('path');
@@ -94,7 +95,7 @@ router.post('/editar/:id', requireAuth, upload.single('image'), async (req, res)
     await project.update({
       title, description, longDescription, tags,
       liveUrl, githubUrl,
-      image: req.file ? '/uploads/' + req.file.filename : project.image,
+      image: req.file ? req.file.path : project.image,
       featured: featured === 'on',
       order: parseInt(order) || 0,
       status: status || 'published'
