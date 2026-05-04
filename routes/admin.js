@@ -1,23 +1,29 @@
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
-const multer = require('multer');
+const cloudinary = require('cloudinary').v2;
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
 const path = require('path');
 const fs = require('fs');
 const { User, Project } = require('../models');
 
 // Multer setup
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const dir = path.join(__dirname, '../public/uploads');
-    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-    cb(null, dir);
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + '-' + file.originalname.replace(/\s+/g, '-'));
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
+const storage = new CloudinaryStorage({
+  cloudinary,
+  params: {
+    folder: 'portfolio',
+    allowed_formats: ['jpg', 'jpeg', 'png', 'webp'],
+    transformation: [{ width: 1200, height: 630, crop: 'fill' }]
   }
 });
-const upload = multer({ storage, limits: { fileSize: 10 * 1024 * 1024 } });
+
+const upload = multer({ storage });
 
 // Auth middleware
 const requireAuth = (req, res, next) => {
@@ -62,7 +68,7 @@ router.post('/nuevo', requireAuth, upload.single('image'), async (req, res) => {
     await Project.create({
       title, description, longDescription, tags,
       liveUrl, githubUrl,
-      image: req.file ? '/uploads/' + req.file.filename : null,
+      image: req.file ? req.file.path : null,
       featured: featured === 'on',
       order: parseInt(order) || 0,
       status: status || 'published'
