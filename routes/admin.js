@@ -63,13 +63,17 @@ router.get('/nuevo', requireAuth, (req, res) => {
   res.render('admin/project-form', { project: null, error: null });
 });
 
-router.post('/nuevo', requireAuth, upload.single('image'), async (req, res) => {
+router.post('/nuevo', requireAuth, upload.array('images', 10), async (req, res) => {
   try {
     const { title, description, longDescription, tags, liveUrl, githubUrl, featured, order, status } = req.body;
+    
+    // Obtener URLs existentes + nuevas
+    const newImages = req.files ? req.files.map(f => f.path) : [];
+    
     await Project.create({
       title, description, longDescription, tags,
       liveUrl, githubUrl,
-      image: req.file ? req.file.path : null,
+      images: JSON.stringify(newImages),
       featured: featured === 'on',
       order: parseInt(order) || 0,
       status: status || 'published'
@@ -87,15 +91,20 @@ router.get('/editar/:id', requireAuth, async (req, res) => {
   res.render('admin/project-form', { project, error: null });
 });
 
-router.post('/editar/:id', requireAuth, upload.single('image'), async (req, res) => {
+router.post('/editar/:id', requireAuth, upload.array('images', 10), async (req, res) => {
   try {
     const project = await Project.findByPk(req.params.id);
     if (!project) return res.redirect('/admin');
     const { title, description, longDescription, tags, liveUrl, githubUrl, featured, order, status } = req.body;
+
+    const existingImages = JSON.parse(project.images || '[]');
+    const newImages = req.files ? req.files.map(f => f.path) : [];
+    const allImages = [...existingImages, ...newImages];
+
     await project.update({
       title, description, longDescription, tags,
       liveUrl, githubUrl,
-      image: req.file ? req.file.path : project.image,
+      images: JSON.stringify(allImages),
       featured: featured === 'on',
       order: parseInt(order) || 0,
       status: status || 'published'

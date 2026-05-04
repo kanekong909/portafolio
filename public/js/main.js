@@ -83,3 +83,35 @@ window.addEventListener('scroll', () => {
       : 'none';
   }
 });
+
+
+// ─── Carousel ───
+const track = document.getElementById('carouselTrack');
+if (track) {
+  const slides = track.querySelectorAll('.carousel-slide');
+  const dots = document.querySelectorAll('.carousel-dot');
+  const prev = document.getElementById('carouselPrev');
+  const next = document.getElementById('carouselNext');
+  let current = 0;
+
+  function goTo(index) {
+    current = (index + slides.length) % slides.length;
+    track.style.transform = `translateX(-${current * 100}%)`;
+    dots.forEach((d, i) => d.classList.toggle('active', i === current));
+  }
+
+  if (prev) prev.addEventListener('click', () => goTo(current - 1));
+  if (next) next.addEventListener('click', () => goTo(current + 1));
+  dots.forEach((dot, i) => dot.addEventListener('click', () => goTo(i)));
+
+  // Swipe en móvil
+  let startX = 0;
+  track.addEventListener('touchstart', e => startX = e.touches[0].clientX);
+  track.addEventListener('touchend', e => {
+    const diff = startX - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 50) goTo(current + (diff > 0 ? 1 : -1));
+  });
+
+  // Auto-play
+  setInterval(() => goTo(current + 1), 5000);
+}

@@ -95,8 +95,9 @@
       <% featured.forEach((p, i) => { %>
       <article class="featured-card <%= i === 0 ? 'featured-large' : '' %>" onclick="location.href='/proyecto/<%= p.id %>'">
         <div class="card-image">
-          <% if (p.image) { %>
-            <img src="<%= p.image %>" alt="<%= p.title %>" loading="lazy">
+          <% const imgs = JSON.parse(p.images || '[]'); %>
+            <% if (imgs.length > 0) { %>
+              <img src="<%= imgs[0] %>" alt="<%= p.title %>" loading="lazy">
           <% } else { %>
             <div class="card-placeholder">
               <span><%= p.title.charAt(0) %></span>

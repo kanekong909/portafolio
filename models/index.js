@@ -20,7 +20,7 @@ const Project = sequelize.define('Project', {
   title: { type: DataTypes.STRING, allowNull: false },
   description: { type: DataTypes.TEXT, allowNull: false },
   longDescription: { type: DataTypes.TEXT },
-  image: { type: DataTypes.STRING },
+  images: { type: DataTypes.TEXT }, // JSON array de URLs
   tags: { type: DataTypes.STRING }, // comma separated
   liveUrl: { type: DataTypes.STRING },
   githubUrl: { type: DataTypes.STRING },
