@@ -160,8 +160,12 @@
       <% projects.forEach(p => { %>
       <article class="project-card" data-tags="<%= p.tags || '' %>" onclick="location.href='/proyecto/<%= p.id %>'">
         <div class="proj-image">
-          <% if (p.image) { %>
-            <img src="<%= p.image %>" alt="<%= p.title %>" loading="lazy">
+          <% 
+            const pImgs = JSON.parse(p.images || '[]');
+            const pThumb = pImgs.length > 0 ? pImgs[0] : (p.image || null);
+          %>
+          <% if (pThumb) { %>
+            <img src="<%= pThumb %>" alt="<%= p.title %>" loading="lazy">
           <% } else { %>
             <div class="proj-placeholder"><%= p.title.charAt(0).toUpperCase() %></div>
           <% } %>
