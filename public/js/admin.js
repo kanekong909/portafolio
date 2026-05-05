@@ -51,16 +51,33 @@ if (uploadArea) {
 }
 
 // ─── Eliminar imágenes existentes ───
-const removeButtons = document.querySelectorAll('.remove-img-btn');
 const removeImagesInput = document.getElementById('removeImages');
-const toRemove = [];
+const toRemove = new Set();
 
-removeButtons.forEach(btn => {
+document.querySelectorAll('.remove-img-btn').forEach(btn => {
   btn.addEventListener('click', () => {
-    const index = btn.dataset.index;
-    toRemove.push(index);
-    btn.closest('.existing-img-wrap').style.opacity = '0.3';
-    btn.closest('.existing-img-wrap').style.pointerEvents = 'none';
-    if (removeImagesInput) removeImagesInput.value = toRemove.join(',');
+    const index = parseInt(btn.dataset.index);
+    const wrap = btn.closest('.existing-img-wrap');
+
+    if (toRemove.has(index)) {
+      // Si ya estaba marcada, desmarcar
+      toRemove.delete(index);
+      wrap.style.opacity = '1';
+      wrap.style.pointerEvents = 'all';
+      btn.textContent = '✕';
+      btn.style.background = '';
+    } else {
+      // Marcar para eliminar
+      toRemove.add(index);
+      wrap.style.opacity = '0.3';
+      wrap.style.pointerEvents = 'none';
+      btn.textContent = '↩';
+      btn.style.background = 'rgba(255,77,77,0.8)';
+      btn.style.pointerEvents = 'all';
+    }
+
+    if (removeImagesInput) {
+      removeImagesInput.value = Array.from(toRemove).join(',');
+    }
   });
 });

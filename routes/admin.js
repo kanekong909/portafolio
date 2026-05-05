@@ -99,7 +99,14 @@ router.post('/editar/:id', requireAuth, upload.array('images', 10), async (req, 
 
     const existingImages = JSON.parse(project.images || '[]');
     const newImages = req.files ? req.files.map(f => f.path) : [];
-    const allImages = [...existingImages, ...newImages];
+
+    // Filtrar las imágenes marcadas para eliminar
+    const removeIndexes = req.body.removeImages
+      ? req.body.removeImages.split(',').map(Number).filter(n => !isNaN(n))
+      : [];
+    const filteredImages = existingImages.filter((_, i) => !removeIndexes.includes(i));
+
+    const allImages = [...filteredImages, ...newImages];
 
     await project.update({
       title, description, longDescription, tags,
