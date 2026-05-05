@@ -13,6 +13,7 @@
     rel="stylesheet">
   <link rel="stylesheet" href="/css/main.css">
   <link rel="stylesheet" href="/css/admin.css">
+  <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
 </head>
 
 <body class="admin-body">
@@ -111,9 +112,9 @@
 
                 <div class="form-group">
                   <label class="form-label">Descripción larga</label>
-                  <textarea name="longDescription" class="form-input form-textarea"
-                    placeholder="Describe el proyecto en detalle, los retos, tecnologías usadas..."
-                    rows="6"><%= project ? (project.longDescription || '') : '' %></textarea>
+                  <div id="quillEditor" style="min-height: 220px;"></div>
+                  <input type="hidden" name="longDescription" id="longDescriptionInput"
+                    value="<%= project ? (project.longDescription || '') : '' %>">
                 </div>
 
                 <div class="form-group">
@@ -216,6 +217,31 @@
           </div>
         </form>
   </main>
+
+  <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
+  <script>
+    const quill = new Quill('#quillEditor', {
+      theme: 'snow',
+      placeholder: 'Describe el proyecto en detalle...',
+      modules: {
+        toolbar: [
+          ['bold', 'italic', 'underline'],
+          [{ list: 'ordered' }, { list: 'bullet' }],
+          ['link'],
+          ['clean']
+        ]
+      }
+    });
+
+    // Cargar contenido existente
+    const existing = document.getElementById('longDescriptionInput').value;
+    if (existing) quill.clipboard.dangerouslyPasteHTML(existing);
+
+    // Al enviar el form, guardar el HTML en el input hidden
+    document.querySelector('.project-form').addEventListener('submit', () => {
+      document.getElementById('longDescriptionInput').value = quill.root.innerHTML;
+    });
+  </script>
 
   <script src="/js/admin.js"></script>
 </body>

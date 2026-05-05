@@ -476,3 +476,35 @@
   .admin-stats { grid-template-columns: 1fr 1fr; }
   .login-card { padding: 32px 24px; }
 }
+
+/* ─── Quill dark theme ─── */
+.ql-toolbar {
+  background: var(--bg-2) !important;
+  border: 1px solid var(--border) !important;
+  border-bottom: none !important;
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0 !important;
+}
+.ql-container {
+  background: var(--bg-2) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 0 0 var(--radius-sm) var(--radius-sm) !important;
+  font-family: var(--font-display) !important;
+  font-size: 14px !important;
+  color: var(--text) !important;
+}
+.ql-editor {
+  min-height: 200px !important;
+  color: var(--text) !important;
+  line-height: 1.7 !important;
+}
+.ql-editor.ql-blank::before {
+  color: var(--text-3) !important;
+  font-style: normal !important;
+}
+.ql-stroke { stroke: var(--text-2) !important; }
+.ql-fill { fill: var(--text-2) !important; }
+.ql-picker-label { color: var(--text-2) !important; }
+.ql-toolbar button:hover .ql-stroke,
+.ql-toolbar button.ql-active .ql-stroke { stroke: var(--accent) !important; }
+.ql-toolbar button:hover .ql-fill,
+.ql-toolbar button.ql-active .ql-fill { fill: var(--accent) !important; }
