@@ -11,7 +11,7 @@
 
 /* Sidebar */
 .sidebar {
-  width: auto;
+  width: 240px;
   min-height: 100vh;
   background: var(--surface);
   border-right: 1px solid var(--border);
@@ -56,6 +56,7 @@
   border-top: 1px solid var(--border);
   margin-top: auto;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: space-between;
 }
