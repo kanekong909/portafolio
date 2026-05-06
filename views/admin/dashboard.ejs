@@ -60,22 +60,30 @@
     <!-- Stats -->
     <div class="admin-stats">
       <div class="admin-stat-card">
-        <div class="asc-icon">📁</div>
+        <div class="asc-icon">
+          <img src="/assets/icons/folder.svg" alt="Proyectos" class="asc-icon-img">
+        </div>
         <div class="asc-num"><%= projects.length %></div>
         <div class="asc-label">Total proyectos</div>
       </div>
       <div class="admin-stat-card">
-        <div class="asc-icon">⭐</div>
+        <div class="asc-icon">
+          <img src="/assets/icons/star.svg" alt="Destacados" class="asc-icon-img">
+        </div>
         <div class="asc-num"><%= projects.filter(p => p.featured).length %></div>
         <div class="asc-label">Destacados</div>
       </div>
       <div class="admin-stat-card">
-        <div class="asc-icon">✅</div>
+        <div class="asc-icon">
+          <img src="/assets/icons/check.svg" alt="Publicados" class="asc-icon-img">
+        </div>
         <div class="asc-num"><%= projects.filter(p => p.status === 'published').length %></div>
         <div class="asc-label">Publicados</div>
       </div>
       <div class="admin-stat-card">
-        <div class="asc-icon">📝</div>
+        <div class="asc-icon">
+          <img src="/assets/icons/borrador.svg" alt="Borradores" class="asc-icon-img">
+        </div>
         <div class="asc-num"><%= projects.filter(p => p.status === 'draft').length %></div>
         <div class="asc-label">Borradores</div>
       </div>
