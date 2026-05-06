@@ -216,7 +216,7 @@ body:has(a:hover) .cursor, body:has(button:hover) .cursor { transform: translate
 }
 .dot {
   width: 8px; height: 8px;
-  background: var(--accent);
+  background: #008F39;
   border-radius: 50%;
 }
 .dot.pulse { animation: pulse 2s infinite; }
